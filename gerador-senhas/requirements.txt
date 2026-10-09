@@ -1,0 +1,2 @@
+# Este projeto usa apenas a biblioteca padrao do Python (nenhuma dependencia externa).
+# Para rodar os testes: pip install -r requirements-dev.txt

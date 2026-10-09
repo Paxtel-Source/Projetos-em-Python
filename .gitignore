@@ -1,0 +1,28 @@
+# Bytecode e cache do Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Ambientes virtuais
+.venv/
+venv/
+env/
+
+# Build e distribuicao
+build/
+dist/
+*.egg-info/
+
+# Dados pessoais e arquivos gerados pelo controle de gastos
+gastos.json
+gastos.json.tmp
+grafico-*.png
+
+# Editores e sistema operacional
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db

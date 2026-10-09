@@ -1,0 +1,4 @@
+[tool.pytest.ini_options]
+# Permite que os testes importem o pacote sem precisar instalá-lo
+pythonpath = ["."]
+testpaths = ["tests"]

@@ -1,0 +1,2 @@
+# Necessario apenas para o comando "grafico"
+matplotlib>=3.7
