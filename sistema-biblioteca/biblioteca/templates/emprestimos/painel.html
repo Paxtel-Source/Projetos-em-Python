@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block titulo %}Painel{% endblock %}
+{% block conteudo %}
+  <h1>Painel do bibliotecário</h1>
+
+  <dl class="resumo">
+    <div><dt>Títulos no catálogo</dt><dd>{{ resumo.livros }}</dd></div>
+    <div><dt>Contas</dt><dd>{{ resumo.leitores }}</dd></div>
+    <div><dt>Empréstimos ativos</dt><dd>{{ resumo.ativos }}</dd></div>
+    <div class="{{ 'resumo--alerta' if resumo.atrasados }}"><dt>Atrasados</dt><dd>{{ resumo.atrasados }}</dd></div>
+  </dl>
+
+  <nav class="filtros" aria-label="Filtrar empréstimos">
+    <a class="filtro{% if filtro != 'atrasados' %} filtro--ativo{% endif %}" href="{{ url_for('emprestimos.painel') }}">Todos os ativos</a>
+    <a class="filtro{% if filtro == 'atrasados' %} filtro--ativo{% endif %}" href="{{ url_for('emprestimos.painel', filtro='atrasados') }}">Só atrasados</a>
+  </nav>
+
+  {% if emprestimos %}
+    <table class="tabela">
+      <thead>
+        <tr><th scope="col">Livro</th><th scope="col">Leitor</th><th scope="col">Devolver até</th><th scope="col"><span class="visualmente-oculto">Ações</span></th></tr>
+      </thead>
+      <tbody>
+        {% for e in emprestimos %}
+          <tr{% if e.atrasado %} class="linha--atrasada"{% endif %}>
+            <td><a href="{{ url_for('livros.detalhe', livro_id=e.livro.id) }}">{{ e.livro.titulo }}</a></td>
+            <td>{{ e.usuario.nome }}<br><small>{{ e.usuario.email }}</small></td>
+            <td>
+              {{ e.data_prevista.strftime("%d/%m/%Y") }}
+              {% if e.atrasado %}<span class="etiqueta etiqueta--atraso">{{ e.dias_de_atraso }} dia(s) de atraso</span>{% endif %}
+            </td>
+            <td>
+              <form method="post" action="{{ url_for('emprestimos.registrar_devolucao', emprestimo_id=e.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="botao botao--pequeno" type="submit">Registrar devolução</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <section class="vazio">
+      <h2>{% if filtro == 'atrasados' %}Nenhum empréstimo atrasado{% else %}Nenhum livro emprestado agora{% endif %}</h2>
+    </section>
+  {% endif %}
+{% endblock %}

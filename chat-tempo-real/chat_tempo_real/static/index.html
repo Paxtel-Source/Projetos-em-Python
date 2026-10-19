@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat em Tempo Real</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+  <!-- ===== Tela de entrada ===== -->
+  <main id="tela-entrada" class="entrada">
+    <form id="form-entrada" class="cartao-entrada" autocomplete="off">
+      <div class="marca">
+        <span class="marca-icone" aria-hidden="true">#</span>
+        <h1>Chat em Tempo Real</h1>
+      </div>
+      <p class="subtitulo">Escolha um apelido e uma sala para começar a conversar.</p>
+
+      <label for="campo-apelido">Apelido</label>
+      <input id="campo-apelido" name="apelido" maxlength="20" required placeholder="Ex.: Gabriel">
+
+      <label for="campo-sala">Sala</label>
+      <select id="campo-sala" name="sala">
+        <option value="geral">#geral</option>
+        <option value="python">#python</option>
+        <option value="linguagem-c">#linguagem-c</option>
+        <option value="ajuda">#ajuda</option>
+      </select>
+
+      <p id="erro-entrada" class="erro-entrada" role="alert" hidden></p>
+      <button type="submit" id="botao-entrar">Entrar no chat</button>
+    </form>
+  </main>
+
+  <!-- ===== Tela do chat ===== -->
+  <div id="tela-chat" class="chat" hidden>
+    <aside id="lateral" class="lateral" aria-label="Salas e pessoas">
+      <section>
+        <h2>Salas</h2>
+        <ul id="lista-salas" class="lista-salas"></ul>
+        <form id="form-sala" class="form-sala" autocomplete="off">
+          <input id="campo-nova-sala" maxlength="24" placeholder="nova-sala" aria-label="Nome da nova sala">
+          <button type="submit" title="Criar ou entrar na sala">+</button>
+        </form>
+      </section>
+      <section>
+        <h2>Nesta sala <span id="total-pessoas" class="contador">0</span></h2>
+        <ul id="lista-pessoas" class="lista-pessoas"></ul>
+      </section>
+      <p class="voce">Você é <strong id="meu-apelido"></strong></p>
+    </aside>
+    <div id="fundo-lateral" class="fundo-lateral" hidden></div>
+
+    <section class="conversa" aria-label="Conversa">
+      <header class="topo">
+        <button id="botao-menu" class="botao-menu" type="button" aria-label="Abrir salas">☰</button>
+        <h1 id="nome-sala" class="nome-sala">#geral</h1>
+        <span id="status" class="status" data-estado="conectando">conectando…</span>
+      </header>
+
+      <ol id="mensagens" class="mensagens" aria-live="polite"></ol>
+
+      <div class="rodape">
+        <p id="digitando" class="digitando" aria-live="polite"></p>
+        <p id="aviso" class="aviso" role="alert" hidden></p>
+        <form id="form-mensagem" class="form-mensagem" autocomplete="off">
+          <input id="campo-mensagem" maxlength="500" placeholder="Escreva uma mensagem…" aria-label="Mensagem">
+          <button type="submit">Enviar</button>
+        </form>
+      </div>
+    </section>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

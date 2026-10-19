@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block titulo %}Catálogo{% endblock %}
+{% block conteudo %}
+  <section class="cabecalho">
+    <h1>Catálogo</h1>
+    <form class="busca" method="get" role="search">
+      <label class="visualmente-oculto" for="q">Buscar livros</label>
+      <input id="q" name="q" type="search" value="{{ busca }}" placeholder="Título, autor ou ISBN">
+      {% if genero %}<input type="hidden" name="genero" value="{{ genero }}">{% endif %}
+      <button class="botao" type="submit">Buscar</button>
+    </form>
+  </section>
+
+  {% if generos %}
+    <nav class="filtros" aria-label="Filtrar por gênero">
+      <a class="filtro{% if not genero %} filtro--ativo{% endif %}"
+         href="{{ url_for('livros.catalogo', q=busca or None) }}">Todos</a>
+      {% for nome, total in generos %}
+        <a class="filtro{% if genero == nome %} filtro--ativo{% endif %}"
+           href="{{ url_for('livros.catalogo', genero=nome, q=busca or None) }}">{{ nome }} <span>{{ total }}</span></a>
+      {% endfor %}
+    </nav>
+  {% endif %}
+
+  {% if paginacao.items %}
+    <ul class="estante">
+      {% for livro in paginacao.items %}
+        <li>
+          <a class="livro" href="{{ url_for('livros.detalhe', livro_id=livro.id) }}">
+            <span class="livro__genero">{{ livro.genero or "Sem gênero" }}</span>
+            <h2 class="livro__titulo">{{ livro.titulo }}</h2>
+            <p class="livro__autor">{{ livro.autor }}{% if livro.ano %}, {{ livro.ano }}{% endif %}</p>
+            {% set livres = livro.disponiveis %}
+            <p class="disponibilidade {{ 'disponibilidade--sim' if livres else 'disponibilidade--nao' }}">
+              {% if livres %}{{ livres }} de {{ livro.exemplares }} disponível(is){% else %}Todos emprestados{% endif %}
+            </p>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+
+    {% if paginacao.pages > 1 %}
+      <nav class="paginas" aria-label="Páginas">
+        {% if paginacao.has_prev %}
+          <a href="{{ url_for('livros.catalogo', pagina=paginacao.prev_num, q=busca or None, genero=genero or None) }}">Anterior</a>
+        {% endif %}
+        <span>Página {{ paginacao.page }} de {{ paginacao.pages }}</span>
+        {% if paginacao.has_next %}
+          <a href="{{ url_for('livros.catalogo', pagina=paginacao.next_num, q=busca or None, genero=genero or None) }}">Próxima</a>
+        {% endif %}
+      </nav>
+    {% endif %}
+  {% else %}
+    <section class="vazio">
+      {% if busca or genero %}
+        <h2>Nenhum livro encontrado</h2>
+        <p>Tente outro termo ou <a href="{{ url_for('livros.catalogo') }}">veja o catálogo completo</a>.</p>
+      {% else %}
+        <h2>O catálogo está vazio</h2>
+        <p>Um bibliotecário pode cadastrar livros em "Novo livro", ou rode <code>flask --app biblioteca popular</code> para carregar livros de exemplo.</p>
+      {% endif %}
+    </section>
+  {% endif %}
+{% endblock %}

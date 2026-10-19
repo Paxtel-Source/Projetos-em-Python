@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block titulo %}Erro {{ codigo }}{% endblock %}
+{% block conteudo %}
+  <section class="vazio">
+    <p class="vazio__codigo">{{ codigo }}</p>
+    <h1>{{ mensagem }}</h1>
+    <a class="botao" href="{{ url_for('livros.catalogo') }}">Voltar ao catálogo</a>
+  </section>
+{% endblock %}

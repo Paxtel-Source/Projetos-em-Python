@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block titulo %}Meus empréstimos{% endblock %}
+{% block conteudo %}
+  <h1>Meus empréstimos</h1>
+
+  {% if ativos %}
+    <ul class="lista-emprestimos">
+      {% for e in ativos %}
+        <li class="emprestimo{% if e.atrasado %} emprestimo--atrasado{% endif %}">
+          <div>
+            <a class="emprestimo__titulo" href="{{ url_for('livros.detalhe', livro_id=e.livro.id) }}">{{ e.livro.titulo }}</a>
+            <p class="emprestimo__autor">{{ e.livro.autor }}</p>
+          </div>
+          <div class="emprestimo__prazo">
+            {% if e.atrasado %}
+              <strong>Atrasado há {{ e.dias_de_atraso }} dia(s)</strong>
+              <span>Devolução era em {{ e.data_prevista.strftime("%d/%m/%Y") }}</span>
+            {% else %}
+              <strong>Devolver até {{ e.data_prevista.strftime("%d/%m/%Y") }}</strong>
+              <span>{% if e.renovado %}Já renovado{% else %}Pode renovar uma vez{% endif %}</span>
+            {% endif %}
+          </div>
+          {% if not e.renovado and not e.atrasado %}
+            <form method="post" action="{{ url_for('emprestimos.renovar_emprestimo', emprestimo_id=e.id) }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button class="botao botao--secundario" type="submit">Renovar por {{ config.RENOVACAO_DIAS }} dias</button>
+            </form>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+    <p class="nota">Você pode ficar com até {{ config.LIMITE_EMPRESTIMOS }} livros ao mesmo tempo. A devolução é feita no balcão da biblioteca.</p>
+  {% else %}
+    <section class="vazio">
+      <h2>Você não está com nenhum livro</h2>
+      <p><a href="{{ url_for('livros.catalogo') }}">Escolha um livro no catálogo</a>.</p>
+    </section>
+  {% endif %}
+
+  {% if historico %}
+    <h2 class="subtitulo">Devolvidos recentemente</h2>
+    <table class="tabela">
+      <thead><tr><th scope="col">Livro</th><th scope="col">Pegou em</th><th scope="col">Devolveu em</th></tr></thead>
+      <tbody>
+        {% for e in historico %}
+          <tr>
+            <td>{{ e.livro.titulo }}</td>
+            <td>{{ e.data_emprestimo.strftime("%d/%m/%Y") }}</td>
+            <td>{{ e.data_devolucao.strftime("%d/%m/%Y") }}{% if e.dias_de_atraso %} <span class="etiqueta etiqueta--atraso">{{ e.dias_de_atraso }} dia(s) de atraso</span>{% endif %}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+{% endblock %}

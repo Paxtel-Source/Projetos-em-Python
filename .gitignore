@@ -20,6 +20,16 @@ gastos.json
 gastos.json.tmp
 grafico-*.png
 
+# Raspador de preços: sua lista, seu histórico e suas senhas
+produtos.json
+historico*.csv
+.env
+
+# Sistema de biblioteca: banco de dados SQLite
+instance/
+*.db
+*.sqlite3
+
 # Editores e sistema operacional
 .vscode/
 .idea/

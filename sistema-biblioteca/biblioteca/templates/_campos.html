@@ -1,0 +1,11 @@
+{# Desenha um campo de formulário com rótulo e mensagens de erro #}
+{% macro campo(field, dica=None) %}
+  <div class="campo{% if field.errors %} campo--erro{% endif %}">
+    {{ field.label }}
+    {{ field(**({"aria-describedby": field.id ~ "-erro"} if field.errors else {})) }}
+    {% if dica %}<small class="campo__dica">{{ dica }}</small>{% endif %}
+    {% for erro in field.errors %}
+      <small class="campo__erro" id="{{ field.id }}-erro">{{ erro }}</small>
+    {% endfor %}
+  </div>
+{% endmacro %}

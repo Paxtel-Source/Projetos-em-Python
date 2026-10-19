@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block titulo %}{{ livro.titulo }}{% endblock %}
+{% block conteudo %}
+  <a class="voltar" href="{{ url_for('livros.catalogo') }}">Voltar ao catálogo</a>
+
+  <article class="ficha">
+    <div class="ficha__info">
+      <span class="livro__genero">{{ livro.genero or "Sem gênero" }}</span>
+      <h1>{{ livro.titulo }}</h1>
+      <p class="ficha__autor">{{ livro.autor }}</p>
+      <dl class="ficha__dados">
+        {% if livro.ano %}<div><dt>Publicação</dt><dd>{{ livro.ano }}</dd></div>{% endif %}
+        {% if livro.isbn %}<div><dt>ISBN</dt><dd>{{ livro.isbn }}</dd></div>{% endif %}
+        <div><dt>Exemplares</dt><dd>{{ livro.exemplares }}</dd></div>
+        <div><dt>Disponíveis</dt><dd>{{ livro.disponiveis }}</dd></div>
+      </dl>
+    </div>
+
+    <div class="ficha__acoes">
+      {% if current_user.is_authenticated %}
+        {% if livro.disponiveis %}
+          <form method="post" action="{{ url_for('livros.pegar_emprestado', livro_id=livro.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="botao botao--largo" type="submit">Pegar emprestado</button>
+          </form>
+          <p class="ficha__nota">Prazo de {{ config.PRAZO_DIAS }} dias, renovável uma vez.</p>
+        {% else %}
+          <p class="disponibilidade disponibilidade--nao">Todos os exemplares estão emprestados.</p>
+        {% endif %}
+      {% else %}
+        <a class="botao botao--largo" href="{{ url_for('auth.entrar', next=request.path) }}">Entre para pegar emprestado</a>
+      {% endif %}
+
+      {% if current_user.is_authenticated and current_user.bibliotecario %}
+        <div class="ficha__admin">
+          <a class="botao botao--secundario" href="{{ url_for('livros.editar', livro_id=livro.id) }}">Editar</a>
+          <form method="post" action="{{ url_for('livros.excluir', livro_id=livro.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="botao botao--perigo" type="submit">Excluir</button>
+          </form>
+        </div>
+      {% endif %}
+    </div>
+  </article>
+{% endblock %}

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block titulo %}Biblioteca{% endblock %} | Biblioteca</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500;7..72,700&family=Source+Sans+3:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="topo">
+    <a class="marca" href="{{ url_for('livros.catalogo') }}">Biblioteca</a>
+    <nav class="menu" aria-label="Principal">
+      <a href="{{ url_for('livros.catalogo') }}">Catálogo</a>
+      {% if current_user.is_authenticated %}
+        <a href="{{ url_for('emprestimos.meus') }}">Meus empréstimos</a>
+        {% if current_user.bibliotecario %}
+          <a href="{{ url_for('emprestimos.painel') }}">Painel</a>
+          <a href="{{ url_for('livros.novo') }}">Novo livro</a>
+        {% endif %}
+      {% endif %}
+    </nav>
+    <div class="conta">
+      {% if current_user.is_authenticated %}
+        <span class="conta__nome">
+          {{ current_user.nome.split()[0] }}
+          {% if current_user.bibliotecario %}<small>bibliotecário(a)</small>{% endif %}
+        </span>
+        <form method="post" action="{{ url_for('auth.sair') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="botao-link" type="submit">Sair</button>
+        </form>
+      {% else %}
+        <a href="{{ url_for('auth.entrar') }}">Entrar</a>
+        <a class="botao botao--pequeno" href="{{ url_for('auth.cadastro') }}">Criar conta</a>
+      {% endif %}
+    </div>
+  </header>
+
+  <main class="conteudo">
+    {% with mensagens = get_flashed_messages(with_categories=true) %}
+      {% if mensagens %}
+        <div class="avisos" role="status">
+          {% for categoria, mensagem in mensagens %}
+            <p class="aviso aviso--{{ categoria }}">{{ mensagem }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block conteudo %}{% endblock %}
+  </main>
+
+  <footer class="rodape">
+    Projeto de estudo em Python + Flask.
+    <a href="https://github.com/Paxtel-Source/Projetos-em-Python">Código no GitHub</a>
+  </footer>
+</body>
+</html>

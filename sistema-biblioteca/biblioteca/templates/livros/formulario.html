@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% from "_campos.html" import campo %}
+{% block titulo %}{{ titulo_pagina }}{% endblock %}
+{% block conteudo %}
+  <section class="cartao">
+    <h1>{{ titulo_pagina }}</h1>
+    <form class="grade-form" method="post" novalidate>
+      {{ form.hidden_tag() }}
+      <div class="grade-form__largo">{{ campo(form.titulo) }}</div>
+      <div class="grade-form__largo">{{ campo(form.autor) }}</div>
+      {{ campo(form.isbn, "10 ou 13 dígitos, com ou sem hífens.") }}
+      {{ campo(form.ano) }}
+      {{ campo(form.genero, "Ex.: Romance, Poesia, Contos.") }}
+      {{ campo(form.exemplares) }}
+      <div class="grade-form__largo grade-form__acoes">
+        {{ form.enviar(class="botao") }}
+        <a href="{{ url_for('livros.detalhe', livro_id=livro.id) if livro else url_for('livros.catalogo') }}">Cancelar</a>
+      </div>
+    </form>
+  </section>
+{% endblock %}

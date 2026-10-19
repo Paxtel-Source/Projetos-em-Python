@@ -1,0 +1,3 @@
+# Loja de demonstração: robôs podem acessar as páginas de produto
+User-agent: *
+Disallow: /admin/

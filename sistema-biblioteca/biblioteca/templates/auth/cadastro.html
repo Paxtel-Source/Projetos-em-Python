@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% from "_campos.html" import campo %}
+{% block titulo %}Criar conta{% endblock %}
+{% block conteudo %}
+  <section class="cartao cartao--estreito">
+    <h1>Criar conta de leitor</h1>
+    <form method="post" novalidate>
+      {{ form.hidden_tag() }}
+      {{ campo(form.nome) }}
+      {{ campo(form.email) }}
+      {{ campo(form.senha, "Pelo menos 8 caracteres.") }}
+      {{ campo(form.confirmar) }}
+      {{ form.enviar(class="botao botao--largo") }}
+    </form>
+    <p class="cartao__rodape">Já tem conta? <a href="{{ url_for('auth.entrar') }}">Entrar</a></p>
+  </section>
+{% endblock %}
